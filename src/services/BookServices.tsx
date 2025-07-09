@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import axiosInstance from "./axiosInstance";
 
-const getBooksById = async (id) => {
+const getBooksById = async (id: number) => {
   try {
     // const token = localStorage.getItem("token");
     const response = await axiosInstance.get(`/books/${id}/detail`, {
@@ -18,13 +18,13 @@ const getBooksById = async (id) => {
 };
 
 const getAllBooksWithSizeAndPage = async (
-  page,
-  size,
-  setBooks,
-  setTotalPages,
-  setTotalElements,
-  change,
-  content
+  page: number,
+  size: number,
+  setBooks: (books: any[]) => void,
+  setTotalPages: (pages: number) => void,
+  setTotalElements: (elements: number) => void,
+  change: string,
+  content: string | undefined = "" // Thêm giá trị mặc định
 ) => {
   try {
     const token = localStorage.getItem("token");
@@ -49,7 +49,7 @@ const getAllBooksWithSizeAndPage = async (
     setTotalElements(res.data?.data?.meta?.totalElements);
     console.log("Tổng số trang:", res.data?.data?.meta?.totalPages);
     console.log("Tổng số sách:", res.data?.data?.meta?.totalElements);
-  } catch (error) {
+  } catch (error: any) {
     console.error(
       "❌ Lỗi khi lấy danh sách:",
       error.response?.data || error.message
@@ -58,13 +58,13 @@ const getAllBooksWithSizeAndPage = async (
 };
 
 const getAllBooksPreview = async (
-  page,
-  size,
-  setBooks,
-  setTotalPages,
-  setTotalElements,
-  change,
-  content
+  page: number,
+  size: number,
+  setBooks: (books: any[]) => void,
+  setTotalPages: (pages: number) => void,
+  setTotalElements: (elements: number) => void,
+  change: string,
+  content: string | undefined = "" // Thêm giá trị mặc định cho content
 ) => {
   try {
     // const token = localStorage.getItem("token");
@@ -89,7 +89,7 @@ const getAllBooksPreview = async (
     setTotalElements(res.data?.data?.meta?.totalElements);
     // console.log("Tổng số trang:", res.data?.data?.meta?.totalPages);
     // console.log("Tổng số sách:", res.data?.data?.meta?.totalElements);
-  } catch (error) {
+  } catch (error: any) {
     console.error(
       "❌ Lỗi khi lấy danh sách:",
       error.response?.data || error.message
@@ -97,8 +97,14 @@ const getAllBooksPreview = async (
   }
 };
 
-const handleDeleteBook = async (id, setBooks, setTotalElements) => {
-  const confirmToast = toast(
+const handleDeleteBook = async (
+  id: number,
+  setBooks: (books: any) => void,
+  setTotalElements: (
+    elements: number | ((prevElements: number) => number)
+  ) => void
+) => {
+  toast(
     (t) => (
       <div className="flex flex-col">
         <span>Bạn có chắc muốn xóa quyển sách này không?</span>
@@ -118,14 +124,14 @@ const handleDeleteBook = async (id, setBooks, setTotalElements) => {
                   headers: { Authorization: `Bearer ${token}` },
                 });
 
-                setBooks((prevBooks) =>
+                setBooks((prevBooks: any[]) =>
                   prevBooks.filter((book) => book.id !== id)
                 );
                 if (setTotalElements) {
                   setTotalElements((prevTotal) => Math.max(prevTotal - 1, 0));
                 }
                 toast.success("🗑 Xóa sách thành công!");
-              } catch (error) {
+              } catch (error: any) {
                 console.error("❌ Lỗi khi xóa sách:", error);
                 toast.error(
                   error.response?.data?.error || "Xóa sách thất bại!"
@@ -147,18 +153,17 @@ const handleDeleteBook = async (id, setBooks, setTotalElements) => {
     ),
     { duration: Infinity }
   );
-  confirmToast();
 };
 
 const getAllBooksWithCategoryId = async (
-  page,
-  size,
-  setBooks,
-  setTotalPages,
-  setTotalElements,
-  change,
+  page: number,
+  size: number,
+  setBooks: (books: any[]) => void,
+  setTotalPages: (pages: number) => void,
+  setTotalElements: (elements: number) => void,
+  change: string,
   // content,
-  id
+  id: number
 ) => {
   try {
     const res = await axiosInstance.get(
@@ -172,7 +177,7 @@ const getAllBooksWithCategoryId = async (
     // );
     setTotalPages(res.data?.data?.meta?.totalPages);
     setTotalElements(res.data?.data?.meta?.totalElements);
-  } catch (error) {
+  } catch (error: any) {
     console.error(
       "❌ Lỗi khi lấy danh sách sách theo thể loại sách:",
       error.response?.data || error.message
@@ -181,14 +186,14 @@ const getAllBooksWithCategoryId = async (
 };
 
 const getAllBooksWithAuthorId = async (
-  page,
-  size,
-  setBooks,
-  setTotalPages,
-  setTotalElements,
-  change,
+  page: number,
+  size: number,
+  setBooks: (books: any[]) => void,
+  setTotalPages: (pages: number) => void,
+  setTotalElements: (elements: number) => void,
+  change: string,
   // content,
-  id
+  id: number
 ) => {
   try {
     const res = await axiosInstance.get(
@@ -202,7 +207,7 @@ const getAllBooksWithAuthorId = async (
     );
     setTotalPages(res.data?.data?.meta?.totalPages);
     setTotalElements(res.data?.data?.meta?.totalElements);
-  } catch (error) {
+  } catch (error: any) {
     console.error(
       "❌ Lỗi khi lấy danh sách sách theo thể loại sách:",
       error.response?.data || error.message
@@ -210,12 +215,12 @@ const getAllBooksWithAuthorId = async (
   }
 };
 
-const getTotalBookQuantity = async (setTotalBooks) => {
+const getTotalBookQuantity = async (setTotalBooks: (total: number) => void) => {
   try {
     const res = await axiosInstance.get(`/books/preview`);
 
     setTotalBooks(res.data?.data?.meta?.totalElements);
-  } catch (error) {
+  } catch (error: any) {
     console.error(
       "❌ Lỗi khi lấy số lượng sách:",
       error.response?.data || error.message
@@ -223,13 +228,17 @@ const getTotalBookQuantity = async (setTotalBooks) => {
   }
 };
 
-const getTopBooks = async (page, size, setBooks) => {
+const getTopBooks = async (
+  page: number,
+  size: number,
+  setBooks: (books: any[]) => void
+) => {
   try {
     const res = await axiosInstance.get(
       `/books/preview?page=${page}&size=${size}`
     );
     setBooks(res.data?.data?.data || []);
-  } catch (error) {
+  } catch (error: any) {
     console.error(
       "❌ Lỗi khi lấy danh sách:",
       error.response?.data || error.message

@@ -272,7 +272,7 @@ const UserSelectedOrder = () => {
         </div>{" "}
         {(order.status === "PENDING" || order.status === "CONFIRMED") && (
           <>
-            <div className="flex justify-end mt-4">
+            <div className="flex justify-end my-4">
               <button
                 onClick={() => setShowCancelModal(true)}
                 className="px-4 py-2 bg-red-500 text-white rounded-md hover:cursor-pointer

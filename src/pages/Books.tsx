@@ -13,19 +13,45 @@ import toast from "react-hot-toast";
 
 const Books = () => {
   const { idAuthor } = useParams(); // Lấy id từ URL
+  const authorId = idAuthor ? parseInt(idAuthor) : undefined;
   // const navigate = useNavigate(); // Dùng để điều hướng
-  const [books, setBooks] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalElements, setTotalElements] = useState(0);
+
+  interface Book {
+    id: string;
+    title: string;
+    author: string;
+    imageURL: string;
+    originalPrice: number;
+    discountPercentage: number;
+    finalPrice: number;
+    available: boolean;
+    official: boolean;
+  }
+
+  interface Categogy {
+    id: string;
+    title: string;
+    author: string;
+    imageURL: string;
+    originalPrice: number;
+    discountPercentage: number;
+    finalPrice: number;
+    available: boolean;
+    official: boolean;
+  }
+
+  const [books, setBooks] = useState<Book[]>([]);
+  const [categories, setCategories] = useState<Categogy[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalElements, setTotalElements] = useState<number>(0);
   const size = 16; // Số sách mỗi trang
   const sizeCategories = 20; // Số danh mục mỗi trang
-  const [content, setContent] = useState("");
-  const [change, setChange] = useState("");
-  const [idCate, setIdCate] = useState(null);
+  const [content, setContent] = useState<string>("");
+  const [change, setChange] = useState<string>("");
+  const [idCate, setIdCate] = useState<number>();
 
-  const [isFocused, setIsFocused] = useState(false);
+  const [isFocused, setIsFocused] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -68,7 +94,7 @@ const Books = () => {
             change,
             idCate
           );
-        } else if (idAuthor) {
+        } else if (authorId) {
           await getAllBooksWithAuthorId(
             page,
             size,
@@ -76,7 +102,7 @@ const Books = () => {
             setTotalPages,
             setTotalElements,
             change,
-            idAuthor
+            authorId
           );
         } else {
           // Nếu không có danh mục hoặc id === null -> Lấy tất cả sách preview
@@ -99,7 +125,7 @@ const Books = () => {
   }, [page, idCate, content, change, idAuthor]); // Gọi lại API khi page, id, content, hoặc sắp xếp thay đổi
 
   // Khi click vào danh mục
-  const handleCategoryClick = (categoryId) => {
+  const handleCategoryClick = (categoryId: number) => {
     console.log("Danh mục được chọn có ID:", categoryId);
     setIdCate(categoryId);
   };
@@ -113,6 +139,7 @@ const Books = () => {
         <header className="news-header shadow-xl sticky top-4 z-10 backdrop-blur-lg rounded-2xl bg-white">
           <div className="mx-auto flex items-center justify-between p-4">
             <NavLink
+              to="/"
               onClick={() => {
                 // setId(null);
                 scrollTo({ top: 0, behavior: "smooth" });

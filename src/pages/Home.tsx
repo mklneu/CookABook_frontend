@@ -16,11 +16,11 @@ import SidebarArticles from "../components/sideBar/SidebarArticles";
 import axiosInstance from "../services/axiosInstance";
 
 const Home = () => {
-  const [scrollPosition, setScrollPosition] = useState(0);
+  const [scrollPosition, setScrollPosition] = useState<number>(0);
 
   const navigate = useNavigate();
 
-  const truncateText = (text, wordLimit) => {
+  const truncateText = (text: string, wordLimit: number) => {
     const words = text.split(" ");
     return words.length > wordLimit
       ? words.slice(0, wordLimit).join(" ") + "..."
@@ -41,9 +41,22 @@ const Home = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  const [articles, setArticles] = useState([]);
-  const [article, setArticle] = useState();
-  const [Selected, setSelected] = useState(false);
+  interface Article {
+    id: string;
+    title: string;
+    content: string;
+    imageURL: string;
+    createdAt: string;
+    updateAt: string;
+    user?: {
+      id: number;
+      name: string;
+    };
+  }
+
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [article, setArticle] = useState<Article | undefined>();
+  const [Selected, setSelected] = useState<boolean>(false);
   // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,7 +65,7 @@ const Home = () => {
         const res = await axiosInstance.get("/articles/all", {});
 
         setArticles(res.data?.data?.data || []);
-      } catch (error) {
+      } catch (error: any) {
         console.error(
           "❌ Lỗi khi lấy danh sách bài báo:",
           error.response?.data || error.message
@@ -394,7 +407,7 @@ const Home = () => {
                     <div className="w-4/5">
                       <button
                         onClick={() => {
-                          setSelected(null);
+                          setSelected(false);
                         }}
                         className="mb-4 px-4 py-2 hover:opacity-50 mt-5
                             bg-gray-200 rounded hover:cursor-pointer"
@@ -402,16 +415,16 @@ const Home = () => {
                         <IoIosArrowBack className="inline-block -translate-y-0.5 -translate-x-1" />
                         Quay lại
                       </button>
-                      <h2 className="text-2xl font-bold ">{article.title}</h2>
+                      <h2 className="text-2xl font-bold ">{article?.title}</h2>
                       <p className="text-gray-600">
-                        Bởi {article.user?.name} - {article.createdAt}
+                        Bởi {article?.user?.name} - {article?.createdAt}
                       </p>
                       <img
-                        src={article.imageURL}
-                        alt={article.title}
+                        src={article?.imageURL}
+                        alt={article?.title}
                         className=" max-h-96 object-cover rounded-md my-4 mx-auto"
                       />
-                      <p className="min-h-96">{article.content}</p>
+                      <p className="min-h-96">{article?.content}</p>
                     </div>
                     <SidebarArticles
                       newsArticles={articles} // ✅ Truyền dữ liệu từ JSON

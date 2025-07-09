@@ -2,20 +2,30 @@ import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { getAllBooksPreview } from "../../services/BookServices";
 import { useNavigate } from "react-router";
-import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { TiTickOutline } from "react-icons/ti";
 
-const TopDealBanner = () => {
+interface Book {
+  id: string;
+  title: string;
+  author: string;
+  imageURL: string;
+  originalPrice: number;
+  discountPercentage: number;
+  finalPrice: number;
+  available: boolean;
+  official: boolean;
+}
+
+const TopDealBanner: React.FC = () => {
   const navigate = useNavigate();
 
-  const [books, setBooks] = useState([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1); // Số trang
-  const [totalElements, setTotalElements] = useState(0);
-  const [size, setSize] = useState(6); // Số sách mỗi trang
-  const [content, setContent] = useState("");
-  const [change, setChange] = useState("");
-  const [isFading, setIsFading] = useState(false);
+  const [books, setBooks] = useState<Book[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1); // Số trang
+  const [size, setSize] = useState<number>(6); // Số sách mỗi trang
+  const [content] = useState<string>("");
+  const [change] = useState<string>("");
+  const [isFading, setIsFading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,7 +36,7 @@ const TopDealBanner = () => {
           size,
           setBooks,
           setTotalPages,
-          setTotalElements,
+          () => {}, // setTotalElements placeholder
           change,
           content
         );
